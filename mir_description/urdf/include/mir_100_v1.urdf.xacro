@@ -168,7 +168,7 @@
     <joint name="${prefix}base_link_to_imu_joint" type="fixed">
       <parent link="${prefix}base_link" />
       <child link="${prefix}imu_link" />
-      <origin xyz="0.0 0.0 0.25" rpy="0 0 0" />  <!-- same as real MiR -->
+      <origin xyz="0.0 0.0 0.25" rpy="0 0 1.570789" />  <!-- same as real MiR -->
     </joint>
 
     <link name="${prefix}imu_link" />

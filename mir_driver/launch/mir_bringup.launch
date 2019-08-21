@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>  
+	<!-- Args -->
+	<arg name="mir_hostname" default="192.168.12.20" />
+	<arg name="enable_scan_filter" default="false" />
+
+	<!-- URDF -->
+  <include file="$(find mir_description)/launch/upload_mir_urdf.launch" />
+
+	<!-- Robot state publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+	<!-- MiR bridge -->
+	<node name="mir_bridge" pkg="mir_driver" type="mir_bridge.py" output="screen">
+    <param name="hostname" value="$(arg mir_hostname)" />
+    <remap from="map" to="/mir_map" />
+    <remap from="odom" to="mir_odom" />
+    <remap from="cmd_vel" to="mir_cmd" />
+  </node>
+
+	<!-- MiR topic transfrom -->
+	<node name="topic_transfrom" pkg="mir_driver" type="topic_transform.py" output="screen"/>
+
+	<!-- Fake mir joint publisher -->
+  <node name="fake_mir_joint_publisher" pkg="mir_driver" type="fake_mir_joint_publisher.py" output="screen" />
+
+	<!-- Laser scan filter -->
+	<group if="$(arg enable_scan_filter)">
+		<node name="b_laser_filter" pkg="mir_driver" type="rep117_filter.py" output="screen">
+    	<remap from="scan" to="b_scan" />
+    	<remap from="scan_filtered" to="b_scan_filtered" />
+  	</node>
+		<node name="f_laser_filter" pkg="mir_driver" type="rep117_filter.py" output="screen">
+			<remap from="scan" to="f_scan" />
+			<remap from="scan_filtered" to="f_scan_filtered" />
+		</node>
+	</group>
+
+</launch> 
